@@ -1,6 +1,13 @@
 # URL Shortener
 Este proyecto de Python permite acortar URLs utilizando la API de is.gd, con la opción de usar un alias personalizado para la URL acortada.
 
+## Probar en Línea
+
+Puedes probar este script directamente en tu navegador sin necesidad de instalar nada. Visita el siguiente enlace para ejecutar el script en Replit:
+
+[Ejecutar URL Shortener en Github.dev](https://github.dev/PabloSanchez87/Utils_with_Python/blob/main/url_shortener/url_shortener.py)
+
+
 ## Características
 - Acorta URLs utilizando la API de [is.gd](https://is.gd/create.php)
 - Permite definir un alias personalizado para la URL acortada.
