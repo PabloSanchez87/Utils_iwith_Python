@@ -60,7 +60,7 @@ def is_valid_url(url):
 if __name__ == "__main__":
 
     # Pedir al usuario que ingrese la URL original
-    original_url = input("Ingrese la URL a acortar: ")
+    original_url = input("Ingrese la URL completa a acortar: ")
 
     # Verificar si la URL es válida y accesible
     while not is_valid_url(original_url):

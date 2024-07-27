@@ -5,7 +5,9 @@ Este proyecto de Python permite acortar URLs utilizando la API de is.gd, con la 
 
 Puedes probar este script directamente en tu navegador sin necesidad de instalar nada. Visita el siguiente enlace para ejecutar el script en Replit:
 
-[Ejecutar URL Shortener en Github.dev](https://github.dev/PabloSanchez87/Utils_with_Python/blob/main/url_shortener/url_shortener.py)
+[Ejecutar rápida de URL Shortener en Replit](https://replit.com/@PabloSanchez53/UtilswithPython#url_shortener/url_shortener.py)
+
+[Ejecutar URL Shortener en Github.dev codespaces](https://github.dev/PabloSanchez87/Utils_with_Python/blob/main/url_shortener/url_shortener.py)
 
 
 ## Características
