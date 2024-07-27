@@ -26,10 +26,13 @@
 ### Cómo Ejecutar
 
 1. Clona el repositorio o descarga el archivo del script.
+   ```bash
+   https://github.com/PabloSanchez87/Utils_with_Python.git
+   ```
 2. Ejecuta el script utilizando un intérprete de Python.
    
    ```bash
-   python nombre_del_script.py
+   python3 file_renamer.py
    ```
 
 3. Aparecerá un cuadro de diálogo para seleccionar el directorio de trabajo.
