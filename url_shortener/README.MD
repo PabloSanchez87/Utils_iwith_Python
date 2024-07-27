@@ -1,15 +1,6 @@
 # URL Shortener
 Este proyecto de Python permite acortar URLs utilizando la API de is.gd, con la opción de usar un alias personalizado para la URL acortada.
 
-## Probar en Línea
-
-Puedes probar este script directamente en tu navegador sin necesidad de instalar nada. Visita el siguiente enlace para ejecutar el script en Replit:
-
-[Ejecutar rápida de URL Shortener en Replit](https://replit.com/@PabloSanchez53/UtilswithPython#url_shortener/url_shortener.py)
-
-[Ejecutar URL Shortener en Github.dev codespaces](https://github.dev/PabloSanchez87/Utils_with_Python/blob/main/url_shortener/url_shortener.py)
-
-
 ## Características
 - Acorta URLs utilizando la API de [is.gd](https://is.gd/create.php)
 - Permite definir un alias personalizado para la URL acortada.
@@ -72,6 +63,15 @@ Puedes probar este script directamente en tu navegador sin necesidad de instalar
 - `test_is_valid_url_failure`: Verifica que una URL inválida o no accesible devuelve False.
 - `test_url_shortener_success`: Verifica que se puede acortar una URL con un alias disponible.
 - `test_url_shortener_alias_exists`: Verifica el manejo del error cuando el alias ya está en uso.
+
+## Probar en Línea
+
+Puedes probar este script directamente en tu navegador sin necesidad de instalar nada.
+
+[Ejecutar rápida de URL Shortener en Google Colab](https://colab.research.google.com/drive/1ZIVZxBlGyhdRg_WQxEpkFVukKV3Lbwxs?usp=sharing)
+
+[Ejecutar URL Shortener en Github.dev codespaces](https://github.dev/PabloSanchez87/Utils_with_Python/blob/main/url_shortener/url_shortener.py)
+
 
 ## Notas
 - La función `url_shortener` utiliza la biblioteca requests para hacer solicitudes HTTP GET a la **API de is.gd**.
