@@ -26,7 +26,7 @@ def url_shortener(original_url, nick_url):
     response_data = response.json()
     
     # Muestra la respuesta completa para depuración
-    print(response_data)
+    #print(response_data)
     
     # Verifica si la respuesta contiene la clave 'shorturl' (éxito)
     if 'shorturl' in response_data:
@@ -34,18 +34,50 @@ def url_shortener(original_url, nick_url):
         return shorted_url
     else:
         # Muestra un mensaje de error si ocurre un problema
-        print(f"Error in URL shortening. {response_data['errormessage']}")
+        print(f"Error in URL shortening: {response_data['errormessage']}")
         return None
 
-# URL original que se desea acortar
-original_url = 'https://github.com/PabloSanchez87/Utils_with_Python'
-# Alias personalizado deseado para la URL acortada
-nick_url = "repository_github_ps87"
 
-# Intenta acortar la URL con el alias proporcionado
-shorted_url = url_shortener(original_url, nick_url)
+def is_valid_url(url):
+    """
+    Verifica si una URL es válida y accesible.
 
-# Imprime las URLs originales y acortadas si la operación tiene éxito
-if shorted_url:
+    Args:
+        url (str): La URL a verificar.
+
+    Returns:
+        bool: True si la URL es válida y accesible, False en caso contrario.
+    """
+    try:
+        response = requests.head(url, allow_redirects=True)
+        return response.status_code == 200
+    except requests.RequestException:
+        return False
+
+
+
+# Main #
+if __name__ == "__main__":
+
+    # Pedir al usuario que ingrese la URL original
+    original_url = input("Ingrese la URL a acortar: ")
+
+    # Verificar si la URL es válida y accesible
+    while not is_valid_url(original_url):
+        print("La URL ingresada no es válida o no está accesible. Por favor, intente de nuevo.")
+        original_url = input("Ingrese la URL a acortar: ")
+
+    # Pedir al usuario que ingrese un alias personalizado
+    nick_url = input("Ingrese un alias personalizado para la URL acortada: ")
+
+    # Intentar acortar la URL con el alias proporcionado
+    shorted_url = url_shortener(original_url, nick_url)
+
+    # Si el alias ya existe, pedir otro alias
+    while shorted_url is None:
+        nick_url = input("El alias ya existe o es inválido. Por favor, ingrese otro alias: ")
+        shorted_url = url_shortener(original_url, nick_url)
+
+    # Imprimir las URLs originales y acortadas
     print(f'· Original URL: {original_url}')
-    print(f'· Shorted URL: {shorted_url}')
+    print(f'· Shortened URL: {shorted_url}')

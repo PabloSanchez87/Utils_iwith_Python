@@ -1,45 +1,73 @@
 # URL Shortener
+Este proyecto de Python permite acortar URLs utilizando la API de is.gd, con la opción de usar un alias personalizado para la URL acortada.
 
-This Python script allows you to shorten URLs using the is.gd API. You can specify a custom alias for the shortened URL.
+## Características
+- Acorta URLs utilizando la API de [is.gd](https://is.gd/create.php)
+- Permite definir un alias personalizado para la URL acortada.
+- Verifica si la URL es válida y accesible antes de acortarla.
+- [URL Shortening API Reference](https://is.gd/apishorteningreference.php)
 
-## Features
-
-- Shortens URLs using the [is.gd](https://is.gd/) API.
-- Optionally allows for custom aliasing of shortened URLs.
-- Simple and easy to use.
-
-## Prerequisites
-
+## Requisitos Previos
 - Python 3.x
-- `requests` library
+- Biblioteca `requests`
 
-## Installation
-
-1. Clone this repository or download the script.
-
-2. Ensure you have Python 3.x installed on your system.
-
-3. Install the required Python package:
-
+### Instalación
+1. Clona este repositorio o descarga los archivos `url_shortener.py` y `test_url_shortener.py`.
+   
+    ```bash
+    https://github.com/PabloSanchez87/Utils_with_Python.git
+    ```
+2. Asegúrate de tener Python 3.x instalado en tu sistema.
+   ```bash
+   python3 -V
+   ```
+3. Instala la biblioteca requests necesaria:
     ```bash
     pip install requests
     ```
 
-## Usage
-Define the original URL you want to shorten and an optional custom alias.
+## Uso
+**1. Ejecutar el Script Principal**
+- Para acortar una URL, ejecuta `url_shortener.py`. 
+- El script pedirá una URL a acortar y un alias personalizado opcional. 
+- Si el alias ya está en uso, te pedirá que ingreses otro.
+  
+    ```bash
+    python3 url_shortener.py
+    ```
 
-Call the url_shortener function with the original URL and custom alias.
+- Ejemplo de entrada y salida:
+    ```
+    Ingrese la URL a acortar: https://github.com/PabloSanchez87/Utils_with_Python
+    Ingrese un alias personalizado para la URL acortada: repository_github_ps87
+        · Original URL: https://github.com/PabloSanchez87/Utils_with_Python
+        · Shortened URL: https://is.gd/repository_github_ps87
+    ```
 
-The function will return the shortened URL if successful, or print an error message if not.
-
-## Notes
-The url_shortener function uses the requests library to make HTTP GET requests to the is.gd API.
-
-The nick_url parameter allows for specifying a custom alias for the shortened URL. 
-
-**If the alias is already taken, the API will return an error.**
+**2. Verificar la Validez de la URL**
+- El script verifica si la URL es válida y accesible antes de intentar acortarla utilizando la función `is_valid_url()`.
 
 
-## Acknowledgments
+## Test
+- El archivo `test_url_shortener.py` contiene pruebas unitarias para verificar la funcionalidad de las funciones url_shortener e `is_valid_url`. 
+- Utiliza el módulo *unittest* de Python y *mocks de requests* para simular respuestas HTTP.
+- Para ejecutar las pruebas, usa el siguiente comando:
+  
+    ```bash
+    python3 test_url_shortener.py
+    ```
 
-- The [is.gd](https://is.gd/) service for providing the URL shortening API.
+**Las pruebas incluyen:**
+
+- `test_is_valid_url_success`: Verifica que una URL válida devuelve True.
+- `test_is_valid_url_failure`: Verifica que una URL inválida o no accesible devuelve False.
+- `test_url_shortener_success`: Verifica que se puede acortar una URL con un alias disponible.
+- `test_url_shortener_alias_exists`: Verifica el manejo del error cuando el alias ya está en uso.
+
+## Notas
+- La función `url_shortener` utiliza la biblioteca requests para hacer solicitudes HTTP GET a la **API de is.gd**.
+
+- El parámetro `nick_url` permite especificar un alias personalizado para la URL acortada. Si el alias ya está tomado, la API devolverá un error.
+
+## Agradecimientos
+- Al servicio [is.gd](https://is.gd/create.php) por proporcionar la API de acortamiento de URLs
