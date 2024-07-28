@@ -3,7 +3,7 @@
 
 ## Descripción
 - Esta aplicación web, desarrollada con Streamlit, permite a los usuarios generar imágenes utilizando la API de OpenAI. 
-- - La aplicación toma un prompt descriptivo proporcionado por el usuario y genera una imagen basada en ese texto, utilizando el **modelo DALL-E**.
+- La aplicación toma un prompt descriptivo proporcionado por el usuario y genera una imagen basada en ese texto, utilizando el **modelo DALL-E**.
 
 ## Características
 - **Generación de imágenes AI**: Utiliza el modelo DALL-E de OpenAI para crear imágenes basadas en descripciones de texto.
