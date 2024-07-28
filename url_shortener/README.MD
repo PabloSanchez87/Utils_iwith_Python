@@ -1,4 +1,4 @@
-# URL Shortener
+# URL Shortener with Alias
 Este proyecto de Python permite acortar URLs utilizando la API de is.gd, con la opción de usar un alias personalizado para la URL acortada.
 
 ## Características
