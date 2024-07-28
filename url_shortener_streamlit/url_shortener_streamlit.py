@@ -43,6 +43,7 @@ def generate_qr(url):
     img = qr.make_image(fill='black', back_color='white')
 
     # Guardar la imagen en un objeto BytesIO para mostrar en Streamlit
+    # Utilizar un objeto BytesIO para almacenar la imagen en memoria es una manera eficiente de manejar imágenes sin necesidad de guardarlas en el sistema de archivos.
     buffer = BytesIO()
     img.save(buffer, format="PNG")
     buffer.seek(0)
