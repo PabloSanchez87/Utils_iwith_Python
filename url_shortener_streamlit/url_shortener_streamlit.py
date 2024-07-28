@@ -1,5 +1,10 @@
 import pyshorteners
 import streamlit as st
+import qrcode
+from io import BytesIO
+import validators
+import requests
+
 
 # Función para acortar URLs utilizando el servicio TinyURL
 def url_shortener(url):
@@ -15,6 +20,60 @@ def url_shortener(url):
     shortener = pyshorteners.Shortener()  # Crear una instancia del acortador
     shorted_url = shortener.tinyurl.short(url)  # Acortar la URL usando TinyURL
     return shorted_url
+
+# Función para generar un código QR a partir de una URL
+def generate_qr(url):
+    """
+    Genera un código QR para una URL y lo devuelve como una imagen en bytes.
+    
+    Parámetros:
+    url (str): La URL para la cual se generará el código QR.
+    
+    Retorna:
+    BytesIO: La imagen del código QR en formato de bytes.
+    """
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=6,
+        border=4,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill='black', back_color='white')
+
+    # Guardar la imagen en un objeto BytesIO para mostrar en Streamlit
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)
+    return buffer
+
+
+# Función para validar la URL
+def validate_url(url):
+    """
+    Verifica si la URL es válida y accesible.
+    
+    Parámetros:
+    url (str): La URL que se desea validar.
+    
+    Retorna:
+    bool: True si la URL es válida y accesible, False en caso contrario.
+    """
+    if not url:
+        return False, "The URL field is empty."
+    if not validators.url(url):
+        return False, "The URL provided is not valid."
+    try:
+        response = requests.head(url, allow_redirects=True)
+        if response.status_code >= 400:
+            return False, f"The URL returned an error: {response.status_code}"
+        return True, "The URL is valid."
+    except requests.RequestException as e:
+        return False, f"An error occurred: {e}"
+    
+    
+
 
 # Configuración de la página de la aplicación con Streamlit
 st.set_page_config(
@@ -35,7 +94,15 @@ st.title("URL Shortener")
 # Campo de entrada de texto para la URL original
 url = st.text_input("Enter the Original URL:")
 
-# Botón para generar la nueva URL acortada
-if st.button("Generate new URL"):
-    # Si se presiona el botón, se acorta la URL y se muestra
-    st.write("Shortened URL: ", url_shortener(url))
+# Botón para generar la nueva URL acortada y el código QR
+if st.button("Generate new URL and QR"):
+    is_valid, message = validate_url(url)
+    if is_valid:
+        shortened_url = url_shortener(url)
+        st.write("Shortened URL: ", shortened_url)
+        
+        # Generar y mostrar el código QR
+        qr_image = generate_qr(shortened_url)
+        st.image(qr_image, caption="QR Code")
+    else:
+        st.warning(message)
