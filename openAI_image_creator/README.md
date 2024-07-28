@@ -1,8 +1,9 @@
 
-# AI Image Generator App
+# AI Image Creator App
 
 ## Descripción
-Esta aplicación web, desarrollada con Streamlit, permite a los usuarios generar imágenes utilizando la API de OpenAI. La aplicación toma un prompt descriptivo proporcionado por el usuario y genera una imagen basada en ese texto, utilizando el modelo DALL-E.
+- Esta aplicación web, desarrollada con Streamlit, permite a los usuarios generar imágenes utilizando la API de OpenAI. 
+- - La aplicación toma un prompt descriptivo proporcionado por el usuario y genera una imagen basada en ese texto, utilizando el **modelo DALL-E**.
 
 ## Características
 - **Generación de imágenes AI**: Utiliza el modelo DALL-E de OpenAI para crear imágenes basadas en descripciones de texto.
@@ -11,10 +12,12 @@ Esta aplicación web, desarrollada con Streamlit, permite a los usuarios generar
 
 ## Requisitos
 
-- **Python 3.7 o superior**
-- **Paquetes de Python**:
+- Python 3.x
+- Paquetes de Python:
   - `requests`
-  - `streamlit`
+     - [Requests documentation](https://requests.readthedocs.io/en/latest/)
+   - `streamlit`
+     - [Streamlit documentation](https://streamlit.io/)
 
 ## Instalación
 
