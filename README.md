@@ -2,8 +2,8 @@
 
 ## Contenidos
 
-1. [Url Shortner](url_shortener/)
-2. [File renamer](file_renamer/)
+1. [Url Shortner with Alias](url_shortener/)
+2. [Mass file renamer](file_renamer/)
 3. [Create invoice](create_invoce/)
    
 ## Nota
