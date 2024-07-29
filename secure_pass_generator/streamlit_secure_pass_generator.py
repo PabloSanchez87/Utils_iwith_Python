@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import string
 import secrets
@@ -26,13 +27,22 @@ def is_valid_length(length_str):
         return length > 0
     except ValueError:
         return False
-    
+
+# Obtener el directorio base del proyecto (un nivel arriba del directorio actual)
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+# Construir la ruta a los archivos
+favicon_path = os.path.join(base_dir, "resources", "Favicon", "favicon.ico")
+logo_path = os.path.join(base_dir, "resources", "logohorizontal.png")
 
 # Configuración de la página de Streamlit
-st.set_page_config(page_title="Secure Pass Generator", page_icon="./img/favicon.ico", layout="centered")
+st.set_page_config(page_title="Secure Pass Generator", page_icon=favicon_path, layout="centered")
 
-# Muestra un logo en la página (la ruta debe ser ajustada según la ubicación real del archivo)
-st.image("./img/logohorizontal.png", use_column_width=True)
+# Verificar si el archivo de logo existe y luego usarlo
+if not os.path.exists(logo_path):
+    st.error(f"No se encontró el archivo de imagen en: {logo_path}")
+else:
+    st.image(logo_path, use_column_width=True)
 
 # Configuración de la aplicación
 st.title("Generador de Contraseñas")
