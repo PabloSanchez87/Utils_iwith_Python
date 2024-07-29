@@ -6,7 +6,7 @@
 2. [Url Shortener with Streamlit](url_shortener_streamlit/)
 3. [Mass file renamer](file_renamer_tkinter/)
 4. [AI Image Creator](openAI_image_creator/)
-5. [Secure Pass Generator](Secure_Pass_Generator/)
+5. [Secure Pass Generator](secure_pass_generator/)
 6. [Create invoice](create_invoce_tkinter/)
    
 ## Nota
