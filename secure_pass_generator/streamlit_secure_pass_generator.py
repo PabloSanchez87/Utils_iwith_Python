@@ -70,3 +70,24 @@ with st.form(key='password_form'):
                 st.code(password)
         else:
             st.error("Debe ingresar una longitud válida para generar la contraseña.")
+
+
+# Añadir enlaces a LinkedIn y GitHub con logos como botones
+st.markdown(
+    """
+    <div style="display: flex; justify-content: center; gap: 20px;">
+        <a href="https://github.com/PabloSanchez87" target="_blank" style="text-decoration: none;">
+            <button style="background-color:transparent; border: none; cursor: pointer;">
+                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="40" height="40" alt="GitHub Logo"/>
+            </button>
+        </a>
+        <a href="https://www.linkedin.com/in/pablosancheztorres/" target="_blank" style="text-decoration: none;">
+            <button style="background-color:transparent; border: none; cursor: pointer;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" width="40" height="40" alt="LinkedIn Logo"/>
+            </button>
+        </a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+

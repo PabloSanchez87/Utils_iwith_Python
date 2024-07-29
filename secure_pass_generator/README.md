@@ -4,6 +4,14 @@
 - Este repositorio contiene scripts en Python para generar contraseñas seguras utilizando diferentes interfaces. 
 - Se incluyen implementaciones básicas, así como interfaces gráficas y de línea de comandos. 
 
+   ![APPWEB](sc.png)
+
+## Probar en Línea
+
+Puedes probar este script directamente en tu navegador sin necesidad de instalar nada.
+
+- [Ejecutación rápida de Secure Pass Generator en Streamlit Cloud](https://secure-pass-generator.streamlit.app/)
+
 ## Archivos y Descripción
 
 ### 1. secure_pass_generator.py
