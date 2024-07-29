@@ -10,8 +10,8 @@ def generate_password(length, use_letters, use_digits, use_punctuation):
         character_pool += string.ascii_letters
     if use_digits:
         character_pool += string.digits
-    if use_punctuation:
-        character_pool += string.punctuation
+    if use_punctuation:     # string.punctuation si los quisieramos todos.
+        character_pool += "!@#%&*()-_=+.,:;[]"
     
     if not character_pool:
         st.error("Se debe seleccionar al menos un tipo de carácter.")
