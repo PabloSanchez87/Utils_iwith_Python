@@ -29,7 +29,7 @@ def is_valid_length(length_str):
     
 
 # Configuración de la página de Streamlit
-st.set_page_config(page_title="AI Image Generator", page_icon="../resources/Favicon/favicon.ico", layout="centered")
+st.set_page_config(page_title="Secure Pass Generator", page_icon="../resources/Favicon/favicon.ico", layout="centered")
 
 # Muestra un logo en la página (la ruta debe ser ajustada según la ubicación real del archivo)
 st.image("../resources/logohorizontal.png", use_column_width=True)
