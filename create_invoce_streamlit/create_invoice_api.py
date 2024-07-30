@@ -4,7 +4,7 @@ import os
 class ApiConnector:
     def __init__(self) -> None:
         # Inicializa el objeto de la clase con dos atributos
-        api_key = 'sk_JIfIHiCOrcJKqPUeTjO5GzSSfh7SDFma'
+        api_key = ''
         # Define los encabezados HTTP para las solicitudes, indicando que el contenido es de tipo JSON.
         self.headers = self.headers = {
             'content-type': 'application/json',
