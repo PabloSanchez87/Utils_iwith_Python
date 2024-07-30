@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
-import re
 from create_invoice_api import ApiConnector
 import os
+import random
 
 # -------------- CONFIGURACIÓN --------------
 page_title = "Generador de facturas"  # Título de la página de la aplicación
@@ -37,15 +37,17 @@ if "items_invoice" not in st.session_state:
     st.session_state.items_invoice = []  # Lista de artículos para la factura
 
 #-------------- CÓDIGO DE INTERFAZ ----------------
+# Generar un número aleatorio para el número de factura
+random_invoice_number = random.randint(1000, 999999)  # Genera un número entre 1000 y 9999
 
 # Sección de información de la factura
 with st.container():
     cc1, cc2 = st.columns(2)
     cc1.image(url_logo, caption="Pablo Sánchez", width=100)
     from_who = cc1.text_input("De: *", placeholder="Quién envía esta factura")  # Campo para el remitente de la factura
-    to_who = cc1.text_input("Cobrar a: *", placeholder="Para quién es la factura")  # Campo para el destinatario de la factura
+    to_who = cc1.text_input("Para: *", placeholder="Para quién es la factura")  # Campo para el destinatario de la factura
     cc2.subheader("FACTURA")
-    num_invoice = cc2.text_input("#", placeholder="Número de factura")  # Campo para el número de factura
+    num_invoice = cc2.text_input("Número de factura (Personalizable) *", placeholder="Número de factura", value=random_invoice_number)  # Campo para el número de factura
     date_invoice = cc2.date_input("Fecha *")  # Campo para la fecha de la factura
     due_date = cc2.date_input("Fecha de vencimiento *")  # Campo para la fecha de vencimiento
 
@@ -56,11 +58,13 @@ with st.form("entry_form", clear_on_submit=True):
     if "invoice_data" not in st.session_state:
         st.session_state.invoice_data = []  # Lista para almacenar los datos de los artículos de la factura
 
-    cex1, cex2, cex3 = st.columns(3)
-    articulo = cex1.text_input("Articulo", placeholder="Descripción del servicio o producto")  # Descripción del artículo o servicio
+    cex1, cex2, cex3, cex4 = st.columns([4,0.5,0.5, 0.3])
+    articulo = cex1.text_input("Artículo", placeholder="Descripción del servicio o producto")  # Descripción del artículo o servicio
     amount_expense = cex2.number_input("Cantidad", step=1, min_value=1)  # Cantidad del artículo o servicio
-    precio = cex3.number_input("Precio", min_value=0)  # Precio del artículo o servicio
+    precio = cex3.number_input("Precio unitario", min_value=0)  # Precio del artículo o servicio
     submitted_expense = st.form_submit_button("Añadir artículo")  # Botón para añadir el artículo
+    cex4.form_submit_button("Borrar")
+    
     if submitted_expense:
         if articulo == "":
             st.warning("Añade una descripción del artículo o servicio")
@@ -96,7 +100,8 @@ with st.container():
     if descuento:
         final_price = round(final_price - ((descuento / 100) * final_price), 2)
     cc3.write("Total: " + str(final_price) + " " + euro_symbol)
-
+    
+    
 submit = st.button("Enviar")  # Botón para enviar y generar la factura
 
 # Acciones después de enviar el formulario
