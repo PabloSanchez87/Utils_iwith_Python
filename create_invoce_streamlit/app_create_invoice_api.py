@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from create_invoice_api import ApiConnector
 import os
-import random
+import re
 
 # -------------- CONFIGURACIÓN --------------
 page_title = "Generador de facturas"  # Título de la página de la aplicación
@@ -11,7 +11,6 @@ layout = "wide"  # Disposición amplia de la página
 euro_symbol = '\u20AC'  # Símbolo del euro
 total_expenses = 0  # Variable para almacenar el total de gastos
 final_price = 0  # Variable para almacenar el precio final
-css = "style/main.css"  # Archivo CSS para estilos personalizados
 logo = "Logo Pablo Sánchez"  # Texto para el logo
 
 # Obtener el directorio base del proyecto (un nivel arriba del directorio actual)
@@ -34,22 +33,31 @@ st.set_page_config(
 if "first_time" not in st.session_state:
     st.session_state.first_time = ""  # Marca si es la primera vez que se accede
 if "items_invoice" not in st.session_state:
-    st.session_state.items_invoice = []  # Lista de artículos para la factura
-
+    st.session_state.items_invoice = []  # Lista de artículos para la factura    
+    
 #-------------- CÓDIGO DE INTERFAZ ----------------
-# Generar un número aleatorio para el número de factura
-random_invoice_number = random.randint(1000, 999999)  # Genera un número entre 1000 y 9999
 
+#Título
+st.markdown("<h1 style='text-align: center; color: red;'>Generador de facturas</h1>", unsafe_allow_html=True)
+  
 # Sección de información de la factura
 with st.container():
-    cc1, cc2 = st.columns(2)
-    cc1.image(url_logo, caption="Pablo Sánchez", width=100)
-    from_who = cc1.text_input("De: *", placeholder="Quién envía esta factura")  # Campo para el remitente de la factura
-    to_who = cc1.text_input("Para: *", placeholder="Para quién es la factura")  # Campo para el destinatario de la factura
+    cc1, ccaux, cc2 = st.columns([2, 0.1, 2])
+    cc1.subheader("DATOS")
+##    cc1.image(url_logo, width=250)
+
+
+    from_who = cc1.text_area("De: *", placeholder="Nombre completo:\nDirección:\nTeléfono:\nCIF o DNI:\n",)  # Campo para el remitente de la factura
+    to_who = cc1.text_area("Para: *", placeholder="Nombre completo:\nDirección:\nTeléfono:\nCIF o DNI:\n")  # Campo para el destinatario de la factura
+    
     cc2.subheader("FACTURA")
-    num_invoice = cc2.text_input("Número de factura (Personalizable) *", placeholder="Número de factura", value=random_invoice_number)  # Campo para el número de factura
-    date_invoice = cc2.date_input("Fecha *")  # Campo para la fecha de la factura
-    due_date = cc2.date_input("Fecha de vencimiento *")  # Campo para la fecha de vencimiento
+    # Fila interna dentro de cc2 para número de factura, fecha y fecha de vencimiento
+    with cc2:
+        num_invoice_col, date_invoice_col, due_date_col = st.columns([1, 1, 1])
+        num_invoice = num_invoice_col.text_input("Número de factura (Personalizable) *", placeholder="Número de factura")  # Campo para el número de factura
+        date_invoice = date_invoice_col.date_input("Fecha *")  # Campo para la fecha de la factura
+        due_date = due_date_col.date_input("Fecha de vencimiento *")  # Campo para la fecha de vencimiento
+        
 
 # Formulario para agregar gastos
 with st.form("entry_form", clear_on_submit=True):
@@ -58,12 +66,12 @@ with st.form("entry_form", clear_on_submit=True):
     if "invoice_data" not in st.session_state:
         st.session_state.invoice_data = []  # Lista para almacenar los datos de los artículos de la factura
 
-    cex1, cex2, cex3, cex4 = st.columns([4,0.5,0.5, 0.3])
+    cex1, cex2, cex3 = st.columns([4,0.5,0.5])
     articulo = cex1.text_input("Artículo", placeholder="Descripción del servicio o producto")  # Descripción del artículo o servicio
     amount_expense = cex2.number_input("Cantidad", step=1, min_value=1)  # Cantidad del artículo o servicio
     precio = cex3.number_input("Precio unitario", min_value=0)  # Precio del artículo o servicio
     submitted_expense = st.form_submit_button("Añadir artículo")  # Botón para añadir el artículo
-    cex4.form_submit_button("Borrar")
+
     
     if submitted_expense:
         if articulo == "":
@@ -72,7 +80,6 @@ with st.form("entry_form", clear_on_submit=True):
             st.success("Artículo añadido")
             st.session_state.expense_data.append({"Artículo": articulo, "Cantidad": amount_expense, "Precio": precio, "Total": amount_expense * precio})
             st.session_state.invoice_data.append({"name": articulo, "quantity": amount_expense, "unit_cost": precio})
-
 
      # Mostrar tabla de artículos añadidos
     if st.session_state.expense_data:
@@ -89,20 +96,32 @@ with st.form("entry_form", clear_on_submit=True):
 # Sección de información adicional de la factura
 with st.container():
     cc3, cc4 = st.columns(2)
-    notes = cc3.text_area("Notas")  # Área de texto para notas adicionales
-    term = cc4.text_area("Términos")  # Área de texto para términos y condiciones
-    cc3.write("Subtotal: " + str(total_expenses) + " " + euro_symbol)
-    impuesto = cc3.number_input("Impuesto %: ", min_value=0)  # Campo para el porcentaje de impuesto
-    if impuesto:
-        imp = 1 + (impuesto / 100)
-        final_price = final_price * imp
-    descuento = cc3.number_input("Descuento %: ", min_value=0)  # Campo para el porcentaje de descuento
+    notes = cc3.text_area("Notas",placeholder="Notas aclaratorias")  # Área de texto para notas adicionales
+    term = cc4.text_area("Términos", placeholder="Términos y condiciones")  # Área de texto para términos y condiciones
+
+# Sección de impuestos y descuentos
+with st.container():
+    cc5, cc6, cc7, ccaux, cclinks  = st.columns([1,1,1,7,1])  # Ajusta el tamaño de las columnas según sea necesario
+    descuento = cc5.number_input("Descuento %: ", min_value=0, max_value=100, step=1, format="%d")  # Campo para el porcentaje de descuento
     if descuento:
         final_price = round(final_price - ((descuento / 100) * final_price), 2)
-    cc3.write("Total: " + str(final_price) + " " + euro_symbol)
+    impuesto = cc6.number_input("Impuestos %: ", min_value=0, max_value=100, step=1, format="%d")  # Campo para el porcentaje de impuesto
+    # Calcular el precio después de aplicar impuestos
+    if impuesto:
+        final_price = final_price * (1 + (impuesto / 100))
+    cc5.write(f"Subtotal: {total_expenses:.2f} {euro_symbol}")
+    cc6.write(f"Total: {final_price:.2f} {euro_symbol}")
     
-    
-submit = st.button("Enviar")  # Botón para enviar y generar la factura
+    with cclinks:
+        st.write(" ")
+        st.write(" ")
+        ccempty, cclink = st.columns([1,10
+                                      ])
+        cclink.link_button(":blue[Linkedin Dev]", "https://www.linkedin.com/in/pablosancheztorres/")
+        cclink.link_button(":violet[Github Dev]", "https://github.com/PabloSanchez87")
+
+submit = st.button("Enviar", type="primary")  # Botón para enviar y generar la factura
+
 
 # Acciones después de enviar el formulario
 if submit:
@@ -119,7 +138,15 @@ if submit:
             with open(root_invoice, "rb") as file:
                 pdf_data = file.read()
             st.success("Desde aquí puedes descargar la factura generada")
-            st.download_button(label="Descargar factura", data=pdf_data, file_name=f"Factura_{to_who}_{num_invoice}.pdf", mime="application/pdf")
+            
+            # Norlmalizamos el nombre con la primera palabra del to_who
+            to_first_line = to_who.split('\n', 1)[0].strip() if to_who else "SinNombre"
+            # Asegurar un nombre de archivo seguro y limpio
+            to_first_line = re.sub(r'[^\w\s-]', '', to_first_line)  # Eliminar caracteres no deseados
+            filename = f"Factura_{to_first_line}_{num_invoice}.pdf"
+            
+            st.download_button(label="Descargar factura", data=pdf_data, file_name=filename, mime="application/pdf")
             os.remove(root_invoice)  # Eliminar el archivo PDF temporal después de la descarga
+            
         except Exception as excep:
             st.warning(f"Hubo un problema generando la factura pdf: {str(excep)}")

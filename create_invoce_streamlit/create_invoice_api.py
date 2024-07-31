@@ -8,7 +8,8 @@ class ApiConnector:
         # Define los encabezados HTTP para las solicitudes, indicando que el contenido es de tipo JSON.
         self.headers = self.headers = {
             'content-type': 'application/json',
-            'Authorization': f'Bearer {api_key}'
+            'Authorization': f'Bearer {api_key}', 
+            "Accept-Language": "es-ES"
         }
         # Almacena la URL base del servicio al que se conectará.
         self.url = 'https://invoice-generator.com'
@@ -20,7 +21,7 @@ class ApiConnector:
     
     # El método recibe varios parámetros que representan los detalles necesarios para crear una factura.
     def connect_api_and_save_invoice_pdf(self, from_who, to_who, logo, number, date, 
-                                         due_date, items, tax, discounts, notes, terms ):
+                                         due_date, items, tax, discounts, notes, terms):
         
         # El diccionario `invoice_parsed` reúne toda la información necesaria para generar la factura.
         invoice_parsed = {  
@@ -41,6 +42,7 @@ class ApiConnector:
                         'discounts': discounts, # Descuentos aplicables a la factura.
                         'notes': notes ,    # Notas adicionales que puedan ser relevantes para la factura.
                         'terms': terms,      # Términos y condiciones asociados con la factura.
+                        # "custom_fields": custom_fields
                         }
         
         
