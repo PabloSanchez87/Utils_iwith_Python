@@ -44,9 +44,6 @@ st.markdown("<h1 style='text-align: center; color: red;'>Generador de facturas</
 with st.container():
     cc1, ccaux, cc2 = st.columns([2, 0.1, 2])
     cc1.subheader("DATOS")
-##    cc1.image(url_logo, width=250)
-
-
     from_who = cc1.text_area("De: *", placeholder="Nombre completo:\nDirección:\nTeléfono:\nCIF o DNI:\n",)  # Campo para el remitente de la factura
     to_who = cc1.text_area("Para: *", placeholder="Nombre completo:\nDirección:\nTeléfono:\nCIF o DNI:\n")  # Campo para el destinatario de la factura
     
@@ -101,22 +98,21 @@ with st.container():
 
 # Sección de impuestos y descuentos
 with st.container():
-    cc5, cc6, cc7, ccaux, cclinks  = st.columns([1,1,1,7,1])  # Ajusta el tamaño de las columnas según sea necesario
+    cc5, cc6, cc7, cclogo, cclinks  = st.columns([1.5,1.5,4,9,2])  # Ajusta el tamaño de las columnas según sea necesario
     descuento = cc5.number_input("Descuento %: ", min_value=0, max_value=100, step=1, format="%d")  # Campo para el porcentaje de descuento
     if descuento:
         final_price = round(final_price - ((descuento / 100) * final_price), 2)
     impuesto = cc6.number_input("Impuestos %: ", min_value=0, max_value=100, step=1, format="%d")  # Campo para el porcentaje de impuesto
+    
     # Calcular el precio después de aplicar impuestos
     if impuesto:
         final_price = final_price * (1 + (impuesto / 100))
     cc5.write(f"Subtotal: {total_expenses:.2f} {euro_symbol}")
-    cc6.write(f"Total: {final_price:.2f} {euro_symbol}")
+    cc6.write(f":red[Total: {final_price:.2f} {euro_symbol}]")
     
     with cclinks:
         st.write(" ")
-        st.write(" ")
-        ccempty, cclink = st.columns([1,10
-                                      ])
+        ccempty, cclink = st.columns([1,10])
         cclink.link_button(":blue[Linkedin Dev]", "https://www.linkedin.com/in/pablosancheztorres/")
         cclink.link_button(":violet[Github Dev]", "https://github.com/PabloSanchez87")
 
