@@ -1,10 +1,18 @@
 import pyshorteners
+import requests
 import streamlit as st
 import qrcode
 from io import BytesIO
 import validators
-import requests
+import os
+import time
 
+# Obtener el directorio base del proyecto (un nivel arriba del directorio actual)
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+# Construir la ruta a los archivos
+favicon_path = os.path.join(base_dir, "resources", "Favicon", "favicon.ico")
+logo_path = os.path.join(base_dir, "resources", "logohorizontal.png")
 
 # Función para acortar URLs utilizando el servicio TinyURL
 def url_shortener(url):
@@ -50,7 +58,6 @@ def generate_qr(url):
     return buffer
 
 
-# Función para validar la URL
 def validate_url(url):
     """
     Verifica si la URL es válida y accesible.
@@ -65,27 +72,33 @@ def validate_url(url):
         return False, "The URL field is empty."
     if not validators.url(url):
         return False, "The URL provided is not valid."
-    try:
-        response = requests.head(url, allow_redirects=True)
-        if response.status_code >= 400:
-            return False, f"The URL returned an error: {response.status_code}"
-        return True, "The URL is valid."
-    except requests.RequestException as e:
-        return False, f"An error occurred: {e}"
     
+    for _ in range(3):  # Intentar 3 veces
+        try:
+            response = requests.head(url, allow_redirects=True)
+            if response.status_code == 503:
+                time.sleep(2)  # Esperar 2 segundos antes de reintentar
+                continue
+            elif response.status_code >= 400:
+                return False, f"The URL returned an error: {response.status_code}"
+            return True, "The URL is valid."
+        except requests.RequestException as e:
+            return False, f"An error occurred: {e}"
+    
+    return False, "The server is temporarily unavailable after multiple attempts (503). Please try again later."
     
 
 
 # Configuración de la página de la aplicación con Streamlit
 st.set_page_config(
     page_title="URL Shortener",  # Título de la página
-    page_icon="./resources/favicon.ico",  # Favicon de la página
+    page_icon=favicon_path,  # Favicon de la página
     layout="centered"  # Diseño centrado de la aplicación
 )
 
 # Muestra el logo de la aplicación
 st.image(
-    "./resources/logohorizontal.png",  # Ruta al archivo de imagen
+    logo_path,  # Ruta al archivo de imagen
     use_column_width=True  # Ajusta la imagen al ancho de la columna
 )
 
