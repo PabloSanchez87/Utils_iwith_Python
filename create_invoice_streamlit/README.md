@@ -9,6 +9,17 @@ Los usuarios pueden ingresar información sobre el remitente y destinatario de l
 
 La aplicación genera un archivo PDF de la factura, que puede ser descargado por el usuario.
 
+## Despliegue en Streamlit Cloud
+La aplicación está actualmente desplegada en **Streamlit Cloud**, lo que permite un acceso fácil y rápido desde cualquier dispositivo con conexión a Internet.
+
+Acceda a la aplicación en el siguiente enlace: [Generador de Facturas - Streamlit App](https://generador-factura.streamlit.app/)
+
+### Cómo Usar
+- Ingrese los detalles de la factura, incluyendo la información del remitente y destinatario, y los detalles de los productos o servicios.
+   - Puede eliminar filas de la tabla generada con los artículos.
+- Seleccione las opciones adicionales según sea necesario, como impuestos o términos de pago.
+- Genere y descargue la factura en formato PDF.
+
 [Ejemplo de factura generada](/create_invoice_streamlit/invoices/Factura_Cliente%20ABC%20SA_INV-2024-001.pdf)
 
 ![Factura](/create_invoice_streamlit/invoices/imagen_factura.png)
@@ -22,6 +33,7 @@ La aplicación genera un archivo PDF de la factura, que puede ser descargado por
   - Pillow
   - cloudinary
   - requests
+  - python-dotenv
 
 ## Instalación
 
