@@ -71,7 +71,6 @@ class ApiConnector:
         return root # Devuelve la ruta del archivo PDF generado y guardado.
         
     
-    
     def save_invoice_to_pdf(self, pdf_content:str, invoice_number) -> None:
         # Este método toma dos argumentos:
         # - `pdf_content`: Un string que contiene los datos binarios del PDF.

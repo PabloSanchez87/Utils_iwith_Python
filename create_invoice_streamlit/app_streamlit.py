@@ -1,4 +1,3 @@
-# streamlit_app.py
 import streamlit as st
 import pandas as pd
 from PIL import Image
@@ -61,11 +60,10 @@ with st.form("entry_form", clear_on_submit=True):
     if "invoice_data" not in st.session_state:
         st.session_state.invoice_data = []  # Lista para almacenar los datos de los artículos de la factura
 
-    cex1, cex2, cex3, cex4 = st.columns([6,0.5,0.5,0.7])
+    cex1, cex2, cex3 = st.columns([6, 0.5, 0.5])
     articulo = cex1.text_input("Artículo", placeholder="Descripción del servicio o producto")  # Descripción del artículo o servicio
     amount_expense = cex2.number_input("Cantidad", step=1, min_value=1)  # Cantidad del artículo o servicio
     precio_unit = cex3.number_input("Precio unitario", min_value=0.0, format="%.2f")  # Precio del artículo o servicio
-    discount_unit = cex4.number_input("Descuento artículo (%)", min_value=0, max_value=100, step=1, format="%d")  # Descuento en porcentaje
     
     submitted_expense = st.form_submit_button("Añadir artículo")  # Botón para añadir el artículo
     
@@ -73,12 +71,11 @@ with st.form("entry_form", clear_on_submit=True):
         if articulo == "":
             st.warning("Añade una descripción del artículo o servicio")
         else:
-            # Calcular subtotal con descuento
-            discount_amount = (precio_unit * discount_unit / 100) * amount_expense
-            subtotal = (precio_unit * amount_expense) - discount_amount
+            # Calcular subtotal sin descuento
+            subtotal = precio_unit * amount_expense
             st.success("Artículo añadido")
-            st.session_state.expense_data.append({"Artículo": articulo, "Cantidad": amount_expense, "Precio unitario": precio_unit, "Descuento (%)": discount_unit, "Subtotal": subtotal})
-            st.session_state.invoice_data.append({"name": articulo, "quantity": amount_expense, "unit_cost": precio_unit, "discount": discount_unit})
+            st.session_state.expense_data.append({"Cantidad": amount_expense, "Artículo": articulo,  "Precio unitario": precio_unit, "Subtotal": subtotal})
+            st.session_state.invoice_data.append({"name": articulo, "quantity": amount_expense, "unit_cost": precio_unit})
 
     # Mostrar tabla de artículos añadidos
     if st.session_state.expense_data:
@@ -93,12 +90,12 @@ with st.form("entry_form", clear_on_submit=True):
 # Sección de información adicional de la factura
 with st.container():
     cc3, cc4 = st.columns(2)
-    notes = cc3.text_area("Notas",placeholder="Notas aclaratorias")  # Área de texto para notas adicionales
+    notes = cc3.text_area("Notas", placeholder="Notas aclaratorias")  # Área de texto para notas adicionales
     term = cc4.text_area("Términos", placeholder="Términos y condiciones")  # Área de texto para términos y condiciones
 
 # Sección de impuestos y descuentos
 with st.container():
-    cc5, cc6, cc7, ccaux  = st.columns([2,1.5,4,9])  # Ajusta el tamaño de las columnas según sea necesario
+    cc5, cc6, cc7, ccaux  = st.columns([2, 1.5, 4, 9])  # Ajusta el tamaño de las columnas según sea necesario
     descuento = cc5.number_input("Descuento sobre el total %: ", min_value=0, max_value=100, step=1, format="%d")  # Campo para el porcentaje de descuento
     if descuento:
         final_price = round(final_price - ((descuento / 100) * final_price), 2)
