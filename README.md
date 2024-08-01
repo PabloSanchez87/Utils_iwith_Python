@@ -3,6 +3,7 @@
 ## Herramientas desplegadas en StreamLit
 1. [Generador de Facturas](https://generador-factura.streamlit.app/)
 2. [Generador de Contraseñas](https://secure-pass-generator.streamlit.app/)
+3. [Url Shortener + QR](https://url-shortener-qr.streamlit.app/)
 
 ## Contenidos
 
