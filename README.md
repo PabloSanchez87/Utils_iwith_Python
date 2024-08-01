@@ -1,5 +1,9 @@
 # Utils with Python
 
+## Herramientas desplegadas en StreamLit
+1. [Generador de Facturas](https://generador-factura.streamlit.app/)
+2. [Generador de Contraseñas](https://secure-pass-generator.streamlit.app/)
+
 ## Contenidos
 
 1. [Url Shortener with Alias](url_shortener_with_alias/)
