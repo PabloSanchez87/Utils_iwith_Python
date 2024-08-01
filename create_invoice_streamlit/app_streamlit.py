@@ -6,7 +6,6 @@ from config import cloudinary, set_page_config, euro_symbol, total_expenses, fin
 import io
 from create_invoice import process_invoice
 
-
 #------------ CONFIGURACION STREAMLIT ------------
 set_page_config()
 
@@ -15,6 +14,10 @@ if "first_time" not in st.session_state:
     st.session_state.first_time = ""  # Marca si es la primera vez que se accede
 if "items_invoice" not in st.session_state:
     st.session_state.items_invoice = []  # Lista de artículos para la factura
+if "expense_data" not in st.session_state:
+    st.session_state.expense_data = []  # Lista para almacenar los datos de los gastos
+if "invoice_data" not in st.session_state:
+    st.session_state.invoice_data = []  # Inicializar la lista para almacenar datos de los artículos de la factura
 
 #-------------- CÓDIGO DE INTERFAZ ----------------
 # Título
@@ -24,8 +27,8 @@ st.markdown("<h1 style='text-align: center; color: red;'>Generador de facturas</
 with st.container():
     cc1, ccaux, cc2 = st.columns([2, 0.1, 2])
     cc1.subheader("Datos")
-    from_who = cc1.text_area("De: *", placeholder="Nombre completo:\nDirección:\nTeléfono:\nCIF o DNI:\n",height=110)  # Campo para el remitente de la factura
-    to_who = cc1.text_area("Para: *", placeholder="Nombre completo:\nDirección:\nTeléfono:\nCIF o DNI:\n",height=110)  # Campo para el destinatario de la factura
+    from_who = cc1.text_area("De: *", placeholder="Nombre completo:\nDirección:\nTeléfono:\nCIF o DNI:\n", height=110)  # Campo para el remitente de la factura
+    to_who = cc1.text_area("Para: *", placeholder="Nombre completo:\nDirección:\nTeléfono:\nCIF o DNI:\n", height=110)  # Campo para el destinatario de la factura
     
     cc2.subheader("Factura")
     # Fila interna dentro de cc2 para número de factura, fecha y fecha de vencimiento
@@ -54,15 +57,11 @@ with st.container():
         except Exception as e:
             cc2.error(f"Error inesperado: {str(e)}")
 
+# Formulario para añadir artículos a la factura
 with st.form("entry_form", clear_on_submit=True):
-    if "expense_data" not in st.session_state:
-        st.session_state.expense_data = []  # Lista para almacenar los datos de los gastos
-    if "invoice_data" not in st.session_state:
-        st.session_state.invoice_data = []  # Lista para almacenar los datos de los artículos de la factura
-
     cex1, cex2, cex3 = st.columns([6, 0.5, 0.5])
     articulo = cex1.text_input("Artículo", placeholder="Descripción del servicio o producto")  # Descripción del artículo o servicio
-    amount_expense = cex2.number_input("Cantidad", step=1, min_value=1)  # Cantidad del artículo o servicio
+    cantidad = cex2.number_input("Cantidad", step=1, min_value=1)  # Cantidad del artículo o servicio
     precio_unit = cex3.number_input("Precio unitario", min_value=0.0, format="%.2f")  # Precio del artículo o servicio
     
     submitted_expense = st.form_submit_button("Añadir artículo")  # Botón para añadir el artículo
@@ -72,20 +71,58 @@ with st.form("entry_form", clear_on_submit=True):
             st.warning("Añade una descripción del artículo o servicio")
         else:
             # Calcular subtotal sin descuento
-            subtotal = precio_unit * amount_expense
+            subtotal = precio_unit * cantidad
             st.success("Artículo añadido")
-            st.session_state.expense_data.append({"Cantidad": amount_expense, "Artículo": articulo,  "Precio unitario": precio_unit, "Subtotal": subtotal})
-            st.session_state.invoice_data.append({"name": articulo, "quantity": amount_expense, "unit_cost": precio_unit})
+            st.session_state.expense_data.append({
+                "name": articulo, 
+                "quantity": cantidad,  
+                "unit_cost": precio_unit, 
+                "subtotal": subtotal
+            })
 
-    # Mostrar tabla de artículos añadidos
-    if st.session_state.expense_data:
-        df_expense = pd.DataFrame(st.session_state.expense_data)  # Convertir datos de gastos a DataFrame de pandas
-        st.subheader("Artículos añadidos")
-        st.table(df_expense)  # Mostrar tabla con los artículos añadidos
-        total_expenses = df_expense["Subtotal"].sum()  # Calcular el total de gastos
-        st.text(f"Total: {total_expenses:.2f} {euro_symbol}")
-        st.session_state.items_invoice = df_expense.to_dict('records')  # Convertir DataFrame a lista de diccionarios
-        final_price = total_expenses
+# Uso de st.data_editor para edición interactiva de la tabla de artículos
+if st.session_state.expense_data:
+    df_expense = pd.DataFrame(st.session_state.expense_data)  # Convertir datos de gastos a DataFrame de pandas
+    st.subheader("Artículos añadidos")
+    
+    # Usar st.data_editor para editar la tabla
+    edited_df = st.data_editor(
+        df_expense,
+        num_rows="dynamic",
+        column_config={
+            "quantity": st.column_config.NumberColumn("Cantidad", 
+                                                      width="small", 
+                                                      min_value=1, 
+                                                      step=1,
+                                                      format="%d"),
+            "name": st.column_config.TextColumn("Artículo",
+                                                width="large"),
+            "unit_cost": st.column_config.NumberColumn(f"Precio unitario({euro_symbol})",
+                                                        help="Precio por unidad en EUROS",
+                                                        min_value=0, 
+                                                        width="small"),
+            "subtotal": st.column_config.NumberColumn("Subtotal", 
+                                                        disabled=True, 
+                                                        width="small")
+        },
+        hide_index=True, 
+        use_container_width=True,
+        column_order=("quantity", "name", "unit_cost", "subtotal"),
+    )
+
+    # Identificar filas eliminadas
+    deleted_rows = df_expense[~df_expense.index.isin(edited_df.index)]
+    if not deleted_rows.empty:
+        st.success(f"{len(deleted_rows)} filas eliminadas exitosamente.")
+        
+    # Actualizar el DataFrame y el estado de sesión si hubo cambios
+    st.session_state.expense_data = edited_df.to_dict('records')
+    # Crear una versión sin el campo 'subtotal' para pasar a la API
+    invoice_data_clean = edited_df.drop(columns=["subtotal"]).to_dict('records')
+    st.session_state.invoice_data = invoice_data_clean  # Actualizar los datos de la factura
+    total_expenses = edited_df["subtotal"].sum()  # Calcular el total de gastos
+    st.text(f"Total: {total_expenses:.2f} {euro_symbol}")
+    final_price = total_expenses
 
 # Sección de información adicional de la factura
 with st.container():

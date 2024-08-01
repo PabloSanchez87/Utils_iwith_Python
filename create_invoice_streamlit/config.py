@@ -40,4 +40,3 @@ def set_page_config():
             'About': "# Generador de facturas\nEsta aplicación genera facturas de manera rápida y sencilla.\n\nCreada por Pablo Sánchez.\nPara soporte, envíe un correo a sancheztorrespablo@gmail.com."
         }
     )
-
