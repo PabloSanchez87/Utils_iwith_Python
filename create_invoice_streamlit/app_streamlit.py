@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 import cloudinary.uploader
-from config import cloudinary, set_page_config, euro_symbol
+from config import cloudinary, set_page_config, euro_symbol, total_expenses, final_price
 import io
 from create_invoice import process_invoice
 
