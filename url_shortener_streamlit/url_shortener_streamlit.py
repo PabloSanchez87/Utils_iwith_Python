@@ -5,7 +5,7 @@ import qrcode
 from io import BytesIO
 import validators
 import os
-import time
+
 
 # Obtener el directorio base del proyecto (un nivel arriba del directorio actual)
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -58,6 +58,7 @@ def generate_qr(url):
     return buffer
 
 
+# Función para validar la URL
 def validate_url(url):
     """
     Verifica si la URL es válida y accesible.
@@ -72,20 +73,13 @@ def validate_url(url):
         return False, "The URL field is empty."
     if not validators.url(url):
         return False, "The URL provided is not valid."
-    
-    for _ in range(3):  # Intentar 3 veces
-        try:
-            response = requests.head(url, allow_redirects=True)
-            if response.status_code == 503:
-                time.sleep(2)  # Esperar 2 segundos antes de reintentar
-                continue
-            elif response.status_code >= 400:
-                return False, f"The URL returned an error: {response.status_code}"
-            return True, "The URL is valid."
-        except requests.RequestException as e:
-            return False, f"An error occurred: {e}"
-    
-    return False, "The server is temporarily unavailable after multiple attempts (503). Please try again later."
+    try:
+        response = requests.head(url, allow_redirects=True)
+        if response.status_code >= 400:
+            return False, f"The URL returned an error: {response.status_code}"
+        return True, "The URL is valid."
+    except requests.RequestException as e:
+        return False, f"An error occurred: {e}"
     
 
 
