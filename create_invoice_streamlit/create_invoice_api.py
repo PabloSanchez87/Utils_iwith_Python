@@ -1,14 +1,13 @@
 import requests
 import os
+from config import API_KEY_INVOICE_GENERATOR
 
 class ApiConnector:
     def __init__(self) -> None:
-        # Inicializa el objeto de la clase con dos atributos
-        api_key = ''
         # Define los encabezados HTTP para las solicitudes, indicando que el contenido es de tipo JSON.
         self.headers = self.headers = {
             'content-type': 'application/json',
-            'Authorization': f'Bearer {api_key}', 
+            'Authorization': f'Bearer {API_KEY_INVOICE_GENERATOR}', 
             "Accept-Language": "es-ES"
         }
         # Almacena la URL base del servicio al que se conectará.

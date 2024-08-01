@@ -5,47 +5,11 @@ import os
 import re
 import io
 from PIL import Image
-import cloudinary
 import cloudinary.uploader
-import cloudinary.api
-
-# -------------- CONFIGURACIÓN --------------
-page_title = "Generador de facturas"  # Título de la página de la aplicación
-page_icon = "📄" # Icono de la página
-layout = "wide"  # Disposición amplia de la página
-euro_symbol = '\u20AC'  # Símbolo del euro
-total_expenses = 0  # Variable para almacenar el total de gastos
-final_price = 0  # Variable para almacenar el precio final
-logo = "Logo Pablo Sánchez"  # Texto para el logo
-
-# ------------ cloudinary config ------------
-cloudinary.config(
-  cloud_name='',
-  api_key='',
-  api_secret=''
-)
-
-def upload_image_to_cloudinary(file_path):
-    response = cloudinary.uploader.upload(file_path)
-    return response['url']
+from config import cloudinary, set_page_config, euro_symbol
 
 
-# --------------------------------------------
-# Obtener el directorio base del proyecto (un nivel arriba del directorio actual)
-base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-
-
-# --------------------------------------------
-# Configuración de la página de Streamlit
-st.set_page_config(
-    page_title=page_title,
-    page_icon=page_icon,
-    layout=layout,
-    initial_sidebar_state="expanded",
-    menu_items={
-        'Get Help': 'https://github.com/PabloSanchez87',
-    }
-)
+set_page_config()
 
 #-------------- VARIABLES DE ESTADO --------------
 if "first_time" not in st.session_state:
@@ -132,7 +96,7 @@ with st.container():
 
 # Sección de impuestos y descuentos
 with st.container():
-    cc5, cc6, cc7, cclogo, cclinks  = st.columns([1.5,1.5,4,9,2])  # Ajusta el tamaño de las columnas según sea necesario
+    cc5, cc6, cc7, ccaux, cclinks  = st.columns([1.5,1.5,4,9,2])  # Ajusta el tamaño de las columnas según sea necesario
     descuento = cc5.number_input("Descuento %: ", min_value=0, max_value=100, step=1, format="%d")  # Campo para el porcentaje de descuento
     if descuento:
         final_price = round(final_price - ((descuento / 100) * final_price), 2)
