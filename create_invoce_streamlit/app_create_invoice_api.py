@@ -3,6 +3,11 @@ import pandas as pd
 from create_invoice_api import ApiConnector
 import os
 import re
+import io
+from PIL import Image
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # -------------- CONFIGURACIÓN --------------
 page_title = "Generador de facturas"  # Título de la página de la aplicación
@@ -13,11 +18,24 @@ total_expenses = 0  # Variable para almacenar el total de gastos
 final_price = 0  # Variable para almacenar el precio final
 logo = "Logo Pablo Sánchez"  # Texto para el logo
 
+# ------------ cloudinary config ------------
+cloudinary.config(
+  cloud_name='',
+  api_key='',
+  api_secret=''
+)
+
+def upload_image_to_cloudinary(file_path):
+    response = cloudinary.uploader.upload(file_path)
+    return response['url']
+
+
+# --------------------------------------------
 # Obtener el directorio base del proyecto (un nivel arriba del directorio actual)
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-# Construir la ruta del archivo
-url_logo = os.path.join(base_dir, "resources", "logohorizontal.png")
 
+
+# --------------------------------------------
 # Configuración de la página de Streamlit
 st.set_page_config(
     page_title=page_title,
@@ -43,18 +61,34 @@ st.markdown("<h1 style='text-align: center; color: red;'>Generador de facturas</
 # Sección de información de la factura
 with st.container():
     cc1, ccaux, cc2 = st.columns([2, 0.1, 2])
-    cc1.subheader("DATOS")
+    cc1.subheader("Datos")
     from_who = cc1.text_area("De: *", placeholder="Nombre completo:\nDirección:\nTeléfono:\nCIF o DNI:\n",)  # Campo para el remitente de la factura
     to_who = cc1.text_area("Para: *", placeholder="Nombre completo:\nDirección:\nTeléfono:\nCIF o DNI:\n")  # Campo para el destinatario de la factura
     
-    cc2.subheader("FACTURA")
+    cc2.subheader("Factura")
     # Fila interna dentro de cc2 para número de factura, fecha y fecha de vencimiento
     with cc2:
         num_invoice_col, date_invoice_col, due_date_col = st.columns([1, 1, 1])
         num_invoice = num_invoice_col.text_input("Número de factura (Personalizable) *", placeholder="Número de factura")  # Campo para el número de factura
         date_invoice = date_invoice_col.date_input("Fecha *")  # Campo para la fecha de la factura
         due_date = due_date_col.date_input("Fecha de vencimiento *")  # Campo para la fecha de vencimiento
-        
+    
+    # Subida de archivo
+    uploaded_file = cc2.file_uploader("Cargar un logo", type=["jpg", "jpeg", "png"])
+    if uploaded_file is not None:
+        # Abre la imagen
+        image = Image.open(uploaded_file)
+        # Muestra la imagen
+        # cc2.image(image, caption='Foto subida', use_column_width=True)
+
+        # Convertir la imagen a bytes para subirla
+        image_bytes = io.BytesIO()
+        image.save(image_bytes, format='PNG')
+        image_bytes = image_bytes.getvalue()
+
+        # Subir la imagen a Cloudinary
+        response = cloudinary.uploader.upload(io.BytesIO(image_bytes), folder="logos/")
+        url_logo = response['url']
 
 # Formulario para agregar gastos
 with st.form("entry_form", clear_on_submit=True):
