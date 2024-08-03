@@ -6,8 +6,6 @@ from elevenlabs import VoiceSettings
 from pydub import AudioSegment
 from io import BytesIO
 import os
-from typing import Tuple, Optional
-import re
 
 # Cargar configuración desde el archivo .env
 load_dotenv()
